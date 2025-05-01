@@ -1,0 +1,106 @@
+name: Workflow Static Analyzer
+
+on:
+  merge_group:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  changed_workflows:
+    name: Find New/Updated Github Workflows
+    runs-on: ubuntu-latest
+    if: (github.event_name != 'merge_group') && (github.actor != 'dependabot[bot]')
+    permissions:
+      pull-requests: read
+    outputs:
+      files: ${{ steps.get_files.outputs.changed_files }}
+    steps:
+      # We use the API to get changed files instead of using the local
+      # git checkout. In some contexts the git metadata isn't available
+      # so we end up with a checkout of the code that we can scan, but
+      # the missing git metadata means we don't know how to narrow down
+      # what to scan. This is really only a problem for pull requests
+      # that are opened via fork of a private repository. Forks under
+      # the same account, forks of public repositories, and branches on
+      # origin are fine.
+      #
+      # Because the API only lets us see up to 3,000 files, it's
+      # possible we may miss some changed workflows in a large pull
+      # request. However, from my testing, the changes are in alphabetical
+      # order, so they would have to have modified that many files "before"
+      # `.github/workflows/` for us to start missing any.
+      - name: Get Changed Workflows
+        id: get_files
+        run: |
+          gh api \
+            "/repos/$REPOSITORY/pulls/$PR_NUMBER/files" \
+            --paginate \
+            --jq '.[] | select(.status != "removed") | .filename' \
+          >/tmp/files_changed.txt
+
+          FILES=$(
+            grep '^\.github\/workflows\/.*\.ya\?ml' </tmp/files_changed.txt \
+            || true
+          )
+          echo "New files to analyze:"
+          echo "$FILES"
+
+          # shellcheck disable=SC2129
+          echo "changed_files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$FILES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+  build:
+    name: Analyze Github Workflows
+    runs-on: ubuntu-latest
+    if: (github.event_name != 'merge_group') && (github.actor != 'dependabot[bot]') && (needs.changed_workflows.outputs.files != '')
+    needs: [changed_workflows]
+    steps:
+      - name: Set Up Ruby
+        uses: ruby/setup-ruby@d8d83c3960843afb664e821fed6be52f37da5267 # v1.231.0
+        with:
+          ruby-version: '3.0'
+      - name: Get Claws Config
+        uses: actions/checkout@v4
+        with:
+          repository: betterment/security-configs
+          path: security-configs/
+      # We have to do this `mv` ourselves because for some reason, actions/checkout
+      # doesn't support absolute paths OR relative paths that point outside of the
+      # working directory. Absolutely bonkers.
+      - name: Move Claws Config
+        run: |
+          mv security-configs/ /tmp/
+      - name: Set Up Shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set Up Claws
+        run: |
+          gem install claws-scan -v 0.7.3
+      - name: Analyze New/Changed Workflows
+        env:
+          CHANGED_FILES: ${{ needs.changed_workflows.outputs.files }}
+        run: |
+          if [[ "$CHANGED_FILES" == "" ]]; then
+            echo "No workflows to diff :)"
+            exit 0
+          fi
+
+          flags=()
+
+          while IFS= read -r file; do
+            echo "Processing $file"
+            flags+=("-t" "$file")
+          done <<< "$CHANGED_FILES"
+
+          # Execute the analyze command safely
+          echo analyze -f github -c /tmp/security-configs/claws/config.yml "${flags[@]}"
+          analyze -f github -c /tmp/security-configs/claws/config.yml "${flags[@]}"
