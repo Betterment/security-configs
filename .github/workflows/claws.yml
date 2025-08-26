@@ -84,7 +84,7 @@ jobs:
           fetch-depth: 0
       - name: Set Up Claws
         run: |
-          gem install claws-scan -v 0.7.3
+          gem install claws-scan -v 0.9.0
       - name: Analyze New/Changed Workflows
         env:
           CHANGED_FILES: ${{ needs.changed_workflows.outputs.files }}
