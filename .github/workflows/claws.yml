@@ -69,6 +69,7 @@ jobs:
         with:
           repository: betterment/security-configs
           path: security-configs/
+          ref: main
       # We have to do this `mv` ourselves because for some reason, actions/checkout
       # doesn't support absolute paths OR relative paths that point outside of the
       # working directory. Absolutely bonkers.
