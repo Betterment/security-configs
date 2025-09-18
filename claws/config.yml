@@ -9,7 +9,7 @@ Enabled:
   CommandInjection:
   AutomaticMerge:
   UnpinnedAction:
-    trusted_authors: ["Betterment", "actions"]
+    trusted_authors: ["Betterment", "actions", "anthropics"]
   UnsafeCheckout:
   InheritedSecrets:
   BulkPermissions:
