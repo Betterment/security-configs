@@ -7,6 +7,8 @@ Enabled:
   UnapprovedRunners:
     allowed_runners:
       - ubuntu-latest
+      - ubuntu-slim
+      - ubuntu-24.04-arm
       - macos-12
       - macos-15
       - macos-latest
