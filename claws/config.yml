@@ -5,11 +5,21 @@ Enabled:
   EmptyName:
   RiskyTriggers:
   UnapprovedRunners:
-    allowed_runners: ["ubuntu-latest", "macos-12", "macos-15", "macos-latest", "mobile_linux_8_core", "self-hosted"]
+    allowed_runners:
+      - ubuntu-latest
+      - ubuntu-slim
+      - ubuntu-24.04-arm
+      - macos-12
+      - macos-15
+      - macos-latest
+      - mobile_linux_8_core
+      - mobile_linux_16_core
+      - macos-26
+      - self-hosted
   CommandInjection:
   AutomaticMerge:
   UnpinnedAction:
-    trusted_authors: ["Betterment", "actions"]
+    trusted_authors: ["Betterment", "actions", "anthropics"]
   UnsafeCheckout:
   InheritedSecrets:
   BulkPermissions:
