@@ -15,6 +15,7 @@ Enabled:
       - mobile_linux_8_core
       - mobile_linux_16_core
       - macos-26
+      - xcode-27
       - self-hosted
   CommandInjection:
   AutomaticMerge:
