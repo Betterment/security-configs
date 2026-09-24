@@ -27,3 +27,6 @@ Enabled:
   Shellcheck:
     shellcheck_bin: "/usr/bin/shellcheck"
   CheckoutWithStaticCredentials:
+  ImplicitPersistCredentials:
+  GlobalPermissionsBlock:
+  ConfigureAwsStaticCredentials:
