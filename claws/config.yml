@@ -4,6 +4,7 @@ Enabled:
   SpecialPermissions:
   EmptyName:
   RiskyTriggers:
+    risky_triggers: ["pull_request_target"]
   UnapprovedRunners:
     allowed_runners:
       - ubuntu-latest
