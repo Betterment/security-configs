@@ -4,6 +4,7 @@ Enabled:
   SpecialPermissions:
   EmptyName:
   RiskyTriggers:
+    risky_triggers: ["pull_request_target"]
   UnapprovedRunners:
     allowed_runners:
       - ubuntu-latest
@@ -15,6 +16,7 @@ Enabled:
       - mobile_linux_8_core
       - mobile_linux_16_core
       - macos-26
+      - xcode-27
       - self-hosted
   CommandInjection:
   AutomaticMerge:
