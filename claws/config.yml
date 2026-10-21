@@ -30,4 +30,4 @@ Enabled:
   CheckoutWithStaticCredentials:
   ImplicitPersistCredentials:
   GlobalPermissionsBlock:
-  ConfigureAwsStaticCredentials:
+  StaticAwsCredentials:
