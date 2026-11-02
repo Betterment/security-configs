@@ -10,7 +10,7 @@ on:
 jobs:
   changed_workflows:
     name: Find New/Updated Github Workflows
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: (github.event_name != 'merge_group') && (github.actor != 'dependabot[bot]')
     permissions:
       pull-requests: read
@@ -57,7 +57,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
   build:
     name: Analyze Github Workflows
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: (github.event_name != 'merge_group') && (github.actor != 'dependabot[bot]') && (needs.changed_workflows.outputs.files != '')
     needs: [changed_workflows]
     steps:
