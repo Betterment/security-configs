@@ -18,6 +18,7 @@ Enabled:
       - macos-26
       - xcode-27
       - self-hosted
+      - canary
   CommandInjection:
   AutomaticMerge:
   UnpinnedAction:
