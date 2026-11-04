@@ -71,6 +71,7 @@ jobs:
           repository: betterment/security-configs
           path: security-configs/
           ref: main
+          persist-credentials: false
       # We have to do this `mv` ourselves because for some reason, actions/checkout
       # doesn't support absolute paths OR relative paths that point outside of the
       # working directory. Absolutely bonkers.
@@ -84,9 +85,10 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Set Up Claws
         run: |
-          gem install claws-scan -v 0.10.0
+          gem install claws-scan -v 0.10.1
       - name: Analyze New/Changed Workflows
         env:
           CHANGED_FILES: ${{ needs.changed_workflows.outputs.files }}
