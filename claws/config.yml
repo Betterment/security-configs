@@ -7,8 +7,6 @@ Enabled:
     risky_triggers: ["pull_request_target"]
   UnapprovedRunners:
     allowed_runners:
-      - ubuntu-latest
-      - ubuntu-slim
       - ubuntu-24.04
       - ubuntu-24.04-arm
       - macos-12
